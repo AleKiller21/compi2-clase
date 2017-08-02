@@ -77,7 +77,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 24 "expr.y" /* yacc.c:1909  */
+#line 22 "expr.y" /* yacc.c:1909  */
 
     Statement* statement_t;
     Expr* expr_t;

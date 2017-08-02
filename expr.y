@@ -5,13 +5,11 @@
 
 %{
     #include <stdio.h>
-    //#include "ast.h"
     int yylex();
     void print_format(int format, int expression);
     char* bin2dec(char* temp_buffer, int dec);
     extern int yylineno;
     extern char* yyfilename;
-    //int arr[8];
     void yyerror(const char* msg)
     {
         printf("File %s Line: %d: %s\n", yyfilename, yylineno, msg);

@@ -6,7 +6,6 @@
 %{
 #include <stdio.h>
 #include <string.h>
-//#include "ast.h"
 #include "tokens.h"
 typedef struct include_stack
 {
