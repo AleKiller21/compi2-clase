@@ -34,15 +34,23 @@ TK_INDX     "$"[0-7]
 ^"#"[ \t]*"include"[ \t]*[\"\<]     { include_filename_symbol = yytext+yyleng-1; BEGIN(include); }
 "/*"                                { BEGIN(comment); }
 "//".*\n                            { return TK_EOL; }
-"+"                                 { return OP_ADD; }
-"-"                                 { return OP_SUB; }
-"*"                                 { return OP_MUL; }
-"/"                                 { return OP_DIV; }
-"("                                 { return TK_LEFT_PAR; }
-")"                                 { return TK_RIGHT_PAR; }
-"="                                 { return OP_ASSIGN; }
-","                                 { return TK_COMMA;}
+"+"                                 { return '+'; }
+"-"                                 { return '-'; }
+"*"                                 { return '*'; }
+"/"                                 { return '/'; }
+"("                                 { return '('; /*)*/ }
+")"                                 { return ')'; }
+"=="                                { return OP_EQUAL;}
+"!="                                { return OP_NOT_EQUAL;}
+"<"                                 { return '<';}
+">"                                 { return '>';}
+"<="                                { return OP_LESS_THAN_EQUAL;}
+">="                                { return OP_GREATER_THAN_EQUAL;}
+"="                                 { return '='; }
+","                                 { return ',';}
 "print"                             { return RW_PRINT; }
+"if"                                { return RW_IF; }
+"else"                              { return RW_ELSE; }
 "dec"                               { yylval.int_t = 0; return RW_DEC; }
 "hex"                               { yylval.int_t = 1; return RW_HEX; }
 "bin"                               { yylval.int_t = 2; return RW_BIN; }

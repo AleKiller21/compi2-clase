@@ -51,24 +51,21 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    OP_ADD = 258,
-    OP_SUB = 259,
-    OP_MUL = 260,
-    OP_DIV = 261,
-    OP_ASSIGN = 262,
-    TK_COMMA = 263,
-    TK_LEFT_PAR = 264,
-    TK_RIGHT_PAR = 265,
-    TK_DEF = 266,
-    TK_NUMBER = 267,
-    TK_INDEX = 268,
-    TK_EOL = 269,
-    TK_EOF = 270,
-    TK_ERROR = 271,
-    RW_PRINT = 272,
-    RW_DEC = 273,
-    RW_HEX = 274,
-    RW_BIN = 275
+    TK_NUMBER = 258,
+    TK_INDEX = 259,
+    TK_EOL = 260,
+    TK_EOF = 261,
+    TK_ERROR = 262,
+    RW_PRINT = 263,
+    RW_IF = 264,
+    RW_ELSE = 265,
+    RW_DEC = 266,
+    RW_HEX = 267,
+    RW_BIN = 268,
+    OP_LESS_THAN_EQUAL = 269,
+    OP_GREATER_THAN_EQUAL = 270,
+    OP_EQUAL = 271,
+    OP_NOT_EQUAL = 272
   };
 #endif
 
@@ -83,7 +80,7 @@ union YYSTYPE
     Expr* expr_t;
     int int_t;
 
-#line 87 "tokens.h" /* yacc.c:1909  */
+#line 84 "tokens.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

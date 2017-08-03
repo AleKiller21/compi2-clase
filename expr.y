@@ -29,12 +29,11 @@
 %type <expr_t> expr term factor
 %type <int_t> output_format
 
-%token OP_ADD OP_SUB OP_MUL OP_DIV OP_ASSIGN TK_COMMA
-%token TK_LEFT_PAR TK_RIGHT_PAR TK_DEF
 %token <int_t> TK_NUMBER TK_INDEX
 %token TK_EOL TK_EOF TK_ERROR
-%token RW_PRINT
+%token RW_PRINT RW_IF RW_ELSE
 %token <int_t> RW_DEC RW_HEX RW_BIN
+%token OP_LESS_THAN_EQUAL OP_GREATER_THAN_EQUAL OP_EQUAL OP_NOT_EQUAL 
 
 %%
 
@@ -43,7 +42,6 @@ source: opt_new_line stmt_list opt_new_line { $2->exec(); }
 
 stmt_list: stmt {$$ = new BlockStatement(); ((BlockStatement*)$$)->addStatement($1); }
         | stmt_list new_line stmt { $$ = $1; ((BlockStatement*)$$)->addStatement($3); }
-
 ;
 
 opt_new_line: new_line
@@ -58,10 +56,10 @@ stmt: print_statement { $$ = $1; }
     | assign_statement { $$ = $1; }
 ;
 
-print_statement: RW_PRINT TK_LEFT_PAR expr TK_COMMA output_format TK_RIGHT_PAR { $$ = new PrintStatement($3, $5); }
+print_statement: RW_PRINT '(' expr ',' output_format ')' { $$ = new PrintStatement($3, $5); }
 ;
 
-assign_statement: TK_INDEX OP_ASSIGN expr { $$ = new AssignStatement($1, $3); }
+assign_statement: TK_INDEX '=' expr { $$ = new AssignStatement($1, $3); }
 ;
 
 output_format: RW_BIN { $$ = $1; }
@@ -69,17 +67,17 @@ output_format: RW_BIN { $$ = $1; }
             |  RW_HEX { $$ = $1; }
 ;
 
-expr: expr OP_ADD term { $$ = new AddExpr($1, $3); }
-    | expr OP_SUB term { $$ = new SubExpr($1, $3); }
+expr: expr '+' term { $$ = new AddExpr($1, $3); }
+    | expr '-' term { $$ = new SubExpr($1, $3); }
     | term { $$ = $1; }
 ;
 
-term: term OP_MUL factor { $$ = new MulExpr($1, $3); }
-    | term OP_DIV factor { $$ = new DivExpr($1, $3); }
+term: term '*' factor { $$ = new MulExpr($1, $3); }
+    | term '/' factor { $$ = new DivExpr($1, $3); }
     | factor { $$ = $1; }
 ;
 
 factor: TK_NUMBER { $$ = new NumberExpr($1); }
-        | TK_LEFT_PAR expr TK_RIGHT_PAR { $$ = $2; }
+        | '(' expr ')' { $$ = $2; }
         | TK_INDEX { $$ = new VarExpr($1); }
 ;
