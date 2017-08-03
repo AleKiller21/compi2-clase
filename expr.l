@@ -47,6 +47,8 @@ TK_INDX     "$"[0-7]
 "<="                                { return OP_LESS_THAN_EQUAL;}
 ">="                                { return OP_GREATER_THAN_EQUAL;}
 "="                                 { return '='; }
+"{"                                 { return '{'; /*}*/ }
+"}"                                 { /*{*/ return '}'; }
 ","                                 { return ',';}
 "print"                             { return RW_PRINT; }
 "if"                                { return RW_IF; }

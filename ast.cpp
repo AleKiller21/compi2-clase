@@ -133,7 +133,7 @@ void PrintStatement::exec()
 void IfStatement::exec()
 {
     if(expr->eval()) true_list->exec();
-    else false_list->exec();
+    else if(false_list != NULL) false_list->exec();
 }
 
 void BlockStatement::exec()

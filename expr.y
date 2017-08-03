@@ -25,8 +25,12 @@
     int int_t;
 }
 
-%type <statement_t> assign_statement print_statement stmt stmt_list
-%type <expr_t> expr term factor
+%type <statement_t> stmt_list stmt assign_statement print_statement if_statement if_block_scope else_statement
+%type <expr_t> expr
+%type <expr_t> term factor
+%type <expr_t> arithmetic_expressions 
+%type <expr_t> relational_expressions 
+%type <expr_t> equality_expressions
 %type <int_t> output_format
 
 %token <int_t> TK_NUMBER TK_INDEX
@@ -54,6 +58,7 @@ new_line: new_line TK_EOL
 
 stmt: print_statement { $$ = $1; }
     | assign_statement { $$ = $1; }
+    | if_statement { $$ = $1; }
 ;
 
 print_statement: RW_PRINT '(' expr ',' output_format ')' { $$ = new PrintStatement($3, $5); }
@@ -62,15 +67,42 @@ print_statement: RW_PRINT '(' expr ',' output_format ')' { $$ = new PrintStateme
 assign_statement: TK_INDEX '=' expr { $$ = new AssignStatement($1, $3); }
 ;
 
+if_statement: RW_IF '(' expr ')' opt_new_line if_block_scope opt_new_line else_statement { $$ = new IfStatement($3, $6, $8); }
+;
+
+if_block_scope: '{' opt_new_line stmt_list opt_new_line '}' { $$ = $3; }
+              | stmt { $$ = $1; }
+;
+
+else_statement: RW_ELSE opt_new_line if_block_scope { $$ = $3; }
+              | %empty { $$ = NULL; }
+;
+
 output_format: RW_BIN { $$ = $1; }
             |  RW_DEC { $$ = $1; }
             |  RW_HEX { $$ = $1; }
 ;
 
-expr: expr '+' term { $$ = new AddExpr($1, $3); }
-    | expr '-' term { $$ = new SubExpr($1, $3); }
-    | term { $$ = $1; }
+expr: equality_expressions { $$ = $1; }
 ;
+
+equality_expressions: equality_expressions OP_EQUAL relational_expressions { $$ = new EqualExpr($1, $3); }
+                    | equality_expressions OP_NOT_EQUAL relational_expressions { $$ = new NotEqualExpr($1, $3); }
+                    | relational_expressions { $$ = $1; }
+;
+
+relational_expressions: relational_expressions '<' arithmetic_expressions { $$ = new LessThanEqualExpr($1, $3); }
+                      | relational_expressions '>' arithmetic_expressions { $$ = new GreaterThanExpr($1, $3); }
+                      | relational_expressions OP_LESS_THAN_EQUAL arithmetic_expressions { $$ = new LessThanEqualExpr($1, $3); }
+                      | relational_expressions OP_GREATER_THAN_EQUAL arithmetic_expressions { $$ = new GreaterThanEqualExpr($1, $3); }
+                      | arithmetic_expressions { $$ = $1; }
+;
+
+arithmetic_expressions: arithmetic_expressions '+' term { $$ = new AddExpr($1, $3); }
+                      | arithmetic_expressions '-' term { $$ = new SubExpr($1, $3); }
+                      | term { $$ = $1; }
+;
+
 
 term: term '*' factor { $$ = new MulExpr($1, $3); }
     | term '/' factor { $$ = new DivExpr($1, $3); }
