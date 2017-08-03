@@ -180,13 +180,13 @@ private:
 class IfStatement : public Statement
 {
 public:
-    Expr* expr;
+    Expr* condition;
     Statement* true_list;
     Statement* false_list;
 
-    IfStatement(Expr* expr, Statement* true_list, Statement* false_list)
+    IfStatement(Expr* condition, Statement* true_list, Statement* false_list)
     {
-        this->expr = expr;
+        this->condition = condition;
         this->true_list = true_list;
         this->false_list = false_list;
     }
