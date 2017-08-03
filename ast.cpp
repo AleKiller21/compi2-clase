@@ -2,6 +2,11 @@
 
 int vars[8];
 
+int VarExpr::eval()
+{
+    return vars[index];
+}
+
 int AddExpr::eval()
 {
     int v1 = expr1->eval();
@@ -34,9 +39,34 @@ int DivExpr::eval()
     return v1 / v2;
 }
 
-int VarExpr::eval()
+int LessThanExpr::eval()
 {
-    return vars[index];
+    return expr1->eval() < expr2->eval();
+}
+
+int GreaterThanExpr::eval()
+{
+    return expr1->eval() > expr2->eval();
+}
+
+int LessThanEqualExpr::eval()
+{
+    return expr1->eval() <= expr2->eval();
+}
+
+int GreaterThanEqualExpr::eval()
+{
+    return expr1->eval() >= expr2->eval();
+}
+
+int EqualExpr::eval()
+{
+    return expr1->eval() == expr2->eval();
+}
+
+int NotEqualExpr::eval()
+{
+    return expr1->eval() != expr2->eval();
 }
 
 void AssignStatement::assign_value()
@@ -98,6 +128,12 @@ char* PrintStatement::bin2dec(char* temp_buffer, int dec)
 void PrintStatement::exec()
 {
     print_format();
+}
+
+void IfStatement::exec()
+{
+    if(expr->eval()) true_list->exec();
+    else false_list->exec();
 }
 
 void BlockStatement::exec()

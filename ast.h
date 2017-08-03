@@ -25,32 +25,16 @@ protected:
     }
 };
 
-class AddExpr : public BinaryExpr
+class RelationalExpr : public BinaryExpr
 {
 public:
-    AddExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
-    int eval();
+    RelationalExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
 };
 
-class SubExpr : public BinaryExpr
+class EqualityExpr : public BinaryExpr
 {
 public:
-    SubExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
-    int eval();
-};
-
-class MulExpr : public BinaryExpr
-{
-public:
-    MulExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
-    int eval();
-};
-
-class DivExpr : public BinaryExpr
-{
-public:
-    DivExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
-    int eval();
+    EqualityExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
 };
 
 class NumberExpr : public Expr
@@ -79,6 +63,76 @@ public:
         this->index = index;
     }
 
+    int eval();
+};
+
+class AddExpr : public BinaryExpr
+{
+public:
+    AddExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
+    int eval();
+};
+
+class SubExpr : public BinaryExpr
+{
+public:
+    SubExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
+    int eval();
+};
+
+class MulExpr : public BinaryExpr
+{
+public:
+    MulExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
+    int eval();
+};
+
+class DivExpr : public BinaryExpr
+{
+public:
+    DivExpr(Expr* expr1, Expr* expr2) : BinaryExpr(expr1, expr2) {}
+    int eval();
+};
+
+class LessThanExpr : public RelationalExpr
+{
+public:
+    LessThanExpr(Expr* expr1, Expr* expr2) : RelationalExpr(expr1, expr2) {}
+    int eval();
+};
+
+class GreaterThanExpr : public RelationalExpr
+{
+public:
+    GreaterThanExpr(Expr* expr1, Expr* expr2) : RelationalExpr(expr1, expr2) {}
+    int eval();
+};
+
+class LessThanEqualExpr : public RelationalExpr
+{
+public:
+    LessThanEqualExpr(Expr* expr1, Expr* expr2) : RelationalExpr(expr1, expr2) {}
+    int eval();
+};
+
+class GreaterThanEqualExpr : public RelationalExpr
+{
+public:
+    GreaterThanEqualExpr(Expr* expr1, Expr* expr2) : RelationalExpr(expr1, expr2) {}
+    int eval();
+};
+
+class EqualExpr : public EqualityExpr
+{
+public:
+    EqualExpr(Expr* expr1, Expr* expr2) : EqualityExpr(expr1, expr2) {}
+    int eval();
+};
+
+class NotEqualExpr : public EqualityExpr
+{
+public:
+    NotEqualExpr(Expr* expr1, Expr* expr2) : EqualityExpr(expr1, expr2) {}
     int eval();
 };
 
@@ -121,6 +175,23 @@ public:
 
 private:
     char* bin2dec(char* temp_buffer, int dec);
+};
+
+class IfStatement : public Statement
+{
+public:
+    Expr* expr;
+    Statement* true_list;
+    Statement* false_list;
+
+    IfStatement(Expr* expr, Statement* true_list, Statement* false_list)
+    {
+        this->expr = expr;
+        this->true_list = true_list;
+        this->false_list = false_list;
+    }
+    
+    void exec();
 };
 
 class BlockStatement: public Statement
