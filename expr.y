@@ -34,10 +34,13 @@
 %type <int_t> output_format
 
 %token <int_t> TK_NUMBER TK_INDEX
+%token <int_t> RW_DEC RW_HEX RW_BIN
 %token TK_EOL TK_EOF TK_ERROR
 %token RW_PRINT RW_IF RW_ELSE
-%token <int_t> RW_DEC RW_HEX RW_BIN
-%token OP_LESS_THAN_EQUAL OP_GREATER_THAN_EQUAL OP_EQUAL OP_NOT_EQUAL 
+%token OP_LESS_THAN_EQUAL "<="
+%token OP_GREATER_THAN_EQUAL ">="
+%token OP_EQUAL "=="
+%token OP_NOT_EQUAL "!=" 
 
 %%
 
@@ -86,15 +89,15 @@ output_format: RW_BIN { $$ = $1; }
 expr: equality_expressions { $$ = $1; }
 ;
 
-equality_expressions: equality_expressions OP_EQUAL relational_expressions { $$ = new EqualExpr($1, $3); }
-                    | equality_expressions OP_NOT_EQUAL relational_expressions { $$ = new NotEqualExpr($1, $3); }
+equality_expressions: equality_expressions "==" relational_expressions { $$ = new EqualExpr($1, $3); }
+                    | equality_expressions "!=" relational_expressions { $$ = new NotEqualExpr($1, $3); }
                     | relational_expressions { $$ = $1; }
 ;
 
 relational_expressions: relational_expressions '<' arithmetic_expressions { $$ = new LessThanEqualExpr($1, $3); }
                       | relational_expressions '>' arithmetic_expressions { $$ = new GreaterThanExpr($1, $3); }
-                      | relational_expressions OP_LESS_THAN_EQUAL arithmetic_expressions { $$ = new LessThanEqualExpr($1, $3); }
-                      | relational_expressions OP_GREATER_THAN_EQUAL arithmetic_expressions { $$ = new GreaterThanEqualExpr($1, $3); }
+                      | relational_expressions "<=" arithmetic_expressions { $$ = new LessThanEqualExpr($1, $3); }
+                      | relational_expressions ">=" arithmetic_expressions { $$ = new GreaterThanEqualExpr($1, $3); }
                       | arithmetic_expressions { $$ = $1; }
 ;
 
