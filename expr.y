@@ -76,14 +76,14 @@ print_statement: RW_PRINT '(' expr ',' output_format ')' { $$ = new PrintStateme
 assign_statement: TK_ID '=' expr { $$ = new AssignStatement($1, $3); }
 ;
 
-if_statement: RW_IF '(' expr ')' opt_new_line if_block_scope opt_new_line else_statement { $$ = new IfStatement($3, $6, $8); }
+if_statement: RW_IF '(' expr ')' new_line if_block_scope new_line else_statement { $$ = new IfStatement($3, $6, $8); }
 ;
 
-if_block_scope: '{' opt_new_line stmt_list opt_new_line '}' { $$ = $3; }
+if_block_scope: '{' new_line stmt_list new_line '}' { $$ = $3; }
               | stmt { $$ = $1; }
 ;
 
-else_statement: RW_ELSE opt_new_line if_block_scope { $$ = $3; }
+else_statement: RW_ELSE new_line if_block_scope { $$ = $3; }
               | %empty { $$ = NULL; }
 ;
 
