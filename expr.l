@@ -5,8 +5,12 @@
 
 %{
 #include <stdio.h>
-#include <string.h>
+//#include <string.h>
+#include <string>
 #include "tokens.h"
+
+using namespace std;
+
 typedef struct include_stack
 {
     struct include_stack* prev;
@@ -27,7 +31,7 @@ int pop_file();
 %}
 
 NUMBER      [0-9]+
-TK_INDX     "$"[0-7]
+ID          [a-zA-z_][a-zA-z0-9_]*
 
 %%
 [ \t]                               { /*Nada*/ }
@@ -56,8 +60,8 @@ TK_INDX     "$"[0-7]
 "dec"                               { yylval.int_t = 0; return RW_DEC; }
 "hex"                               { yylval.int_t = 1; return RW_HEX; }
 "bin"                               { yylval.int_t = 2; return RW_BIN; }
+{ID}                                { yylval.id_t = new string(yytext); return TK_ID; }
 {NUMBER}                            { yylval.int_t = atoi(yytext); return TK_NUMBER; }
-{TK_INDX}                           { yylval.int_t = atoi(yytext + 1); return  TK_INDEX; }
 "\n"                                { return TK_EOL; }
 <INITIAL><<EOF>>                    { if(pop_file() != 0) yyterminate();}
 .                                   { return TK_ERROR; }

@@ -3,3 +3,4 @@ expr_lexer.cpp
 expr_parser.cpp
 sample5
 *.txt
+*.output

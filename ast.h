@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <list>
+#include <string>
+#include <map>
 
 using namespace std;
 
@@ -56,11 +58,11 @@ public:
 class VarExpr : public Expr
 {
 public:
-    int index;
+    string* id;
     
-    VarExpr(int index)
+    VarExpr(string* id)
     {
-        this->index = index;
+        this->id = id;
     }
 
     int eval();
@@ -148,9 +150,9 @@ public:
     VarExpr* var;
     Expr* expr;
 
-    AssignStatement(int index, Expr* expr)
+    AssignStatement(string* id, Expr* expr)
     {
-        this->var = new VarExpr(index);
+        this->var = new VarExpr(id);
         this->expr = expr;
     }
 

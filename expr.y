@@ -5,6 +5,10 @@
 
 %{
     #include <stdio.h>
+    #include <string>
+
+    using namespace std;
+
     int yylex();
     void print_format(int format, int expression);
     char* bin2dec(char* temp_buffer, int dec);
@@ -22,6 +26,7 @@
 {
     Statement* statement_t;
     Expr* expr_t;
+    string* id_t;
     int int_t;
 }
 
@@ -33,8 +38,9 @@
 %type <expr_t> equality_expressions
 %type <int_t> output_format
 
-%token <int_t> TK_NUMBER TK_INDEX
 %token <int_t> RW_DEC RW_HEX RW_BIN
+%token <int_t> TK_NUMBER
+%token <id_t> TK_ID
 %token TK_EOL TK_EOF TK_ERROR
 %token RW_PRINT RW_IF RW_ELSE
 %token OP_LESS_THAN_EQUAL "<="
@@ -67,7 +73,7 @@ stmt: print_statement { $$ = $1; }
 print_statement: RW_PRINT '(' expr ',' output_format ')' { $$ = new PrintStatement($3, $5); }
 ;
 
-assign_statement: TK_INDEX '=' expr { $$ = new AssignStatement($1, $3); }
+assign_statement: TK_ID '=' expr { $$ = new AssignStatement($1, $3); }
 ;
 
 if_statement: RW_IF '(' expr ')' opt_new_line if_block_scope opt_new_line else_statement { $$ = new IfStatement($3, $6, $8); }
@@ -114,5 +120,5 @@ term: term '*' factor { $$ = new MulExpr($1, $3); }
 
 factor: TK_NUMBER { $$ = new NumberExpr($1); }
         | '(' expr ')' { $$ = $2; }
-        | TK_INDEX { $$ = new VarExpr($1); }
+        | TK_ID { $$ = new VarExpr($1); }
 ;

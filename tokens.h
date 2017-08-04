@@ -51,11 +51,11 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    TK_NUMBER = 258,
-    TK_INDEX = 259,
-    RW_DEC = 260,
-    RW_HEX = 261,
-    RW_BIN = 262,
+    RW_DEC = 258,
+    RW_HEX = 259,
+    RW_BIN = 260,
+    TK_NUMBER = 261,
+    TK_ID = 262,
     TK_EOL = 263,
     TK_EOF = 264,
     TK_ERROR = 265,
@@ -74,13 +74,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 22 "expr.y" /* yacc.c:1909  */
+#line 26 "expr.y" /* yacc.c:1909  */
 
     Statement* statement_t;
     Expr* expr_t;
+    string* id_t;
     int int_t;
 
-#line 84 "tokens.h" /* yacc.c:1909  */
+#line 85 "tokens.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

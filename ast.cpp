@@ -1,10 +1,10 @@
 #include "ast.h"
 
-int vars[8];
+map<string, int> vars;
 
 int VarExpr::eval()
 {
-    return vars[index];
+    return vars[*id];
 }
 
 int AddExpr::eval()
@@ -71,7 +71,7 @@ int NotEqualExpr::eval()
 
 void AssignStatement::assign_value()
 {
-    vars[var->index] = expr->eval();
+    vars[*(var->id)] = expr->eval();
 }
 
 void AssignStatement::exec()
