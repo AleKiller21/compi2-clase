@@ -1,11 +1,12 @@
 %code requires
 {
     #include "ast.h"
+    #include <string>
 }
 
 %{
     #include <stdio.h>
-    #include <string>
+    
 
     using namespace std;
 
