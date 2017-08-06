@@ -71,7 +71,7 @@ stmt: print_statement { $$ = $1; }
     | if_statement { $$ = $1; }
 ;
 
-print_statement: RW_PRINT '(' expr ',' output_format ')' { $$ = new PrintStatement($3, $5); }
+print_statement: RW_PRINT '(' expr output_format ')' { $$ = new PrintStatement($3, $4); }
 ;
 
 assign_statement: TK_ID '=' expr { $$ = new AssignStatement($1, $3); }
@@ -88,9 +88,10 @@ else_statement: RW_ELSE new_line if_block_scope { $$ = $3; }
               | %empty { $$ = NULL; }
 ;
 
-output_format: RW_BIN { $$ = $1; }
-            |  RW_DEC { $$ = $1; }
-            |  RW_HEX { $$ = $1; }
+output_format: ',' RW_BIN { $$ = $2; }
+            |  ',' RW_DEC { $$ = $2; }
+            |  ',' RW_HEX { $$ = $2; }
+            |  %empty { $$ = 0; }
 ;
 
 expr: equality_expressions { $$ = $1; }
