@@ -5,8 +5,7 @@
 }
 
 %{
-    #include <stdio.h>
-    
+    #include <stdio.h>  
 
     using namespace std;
 
@@ -20,7 +19,8 @@
         printf("File %s Line: %d: %s\n", yyfilename, yylineno, msg);
     }
 
-    #define YYERROR_VERBOSE 1;
+    #define YYERROR_VERBOSE 1
+    #define YYDEBUG 1
 %}
 
 %union
@@ -55,19 +55,15 @@ source: opt_new_line stmt_list opt_new_line { $2->exec(); }
 ;
 
 stmt_list: stmt {$$ = new BlockStatement(); ((BlockStatement*)$$)->addStatement($1); }
-        | stmt_list new_line stmt { $$ = $1; ((BlockStatement*)$$)->addStatement($3); }
+        | stmt_list stmt { $$ = $1; ((BlockStatement*)$$)->addStatement($2); }
 ;
 
-opt_new_line: new_line
+opt_new_line: TK_EOL
             | %empty
 ;
 
-new_line: new_line TK_EOL
-        | TK_EOL
-;
-
-stmt: print_statement { $$ = $1; }
-    | assign_statement { $$ = $1; }
+stmt: print_statement TK_EOL { $$ = $1; }
+    | assign_statement TK_EOL { $$ = $1; }
     | if_statement { $$ = $1; }
 ;
 
@@ -77,14 +73,14 @@ print_statement: RW_PRINT '(' expr output_format ')' { $$ = new PrintStatement($
 assign_statement: TK_ID '=' expr { $$ = new AssignStatement($1, $3); }
 ;
 
-if_statement: RW_IF '(' expr ')' new_line if_block_scope new_line else_statement { $$ = new IfStatement($3, $6, $8); }
+if_statement: RW_IF '(' expr ')' TK_EOL if_block_scope else_statement { $$ = new IfStatement($3, $6, $7); }
 ;
 
-if_block_scope: '{' new_line stmt_list new_line '}' { $$ = $3; }
+if_block_scope: '{' TK_EOL stmt_list '}' TK_EOL { $$ = $3; }
               | stmt { $$ = $1; }
 ;
 
-else_statement: RW_ELSE new_line if_block_scope { $$ = $3; }
+else_statement: RW_ELSE TK_EOL if_block_scope { $$ = $3; }
               | %empty { $$ = NULL; }
 ;
 

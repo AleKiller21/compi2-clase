@@ -1,9 +1,7 @@
 #include <stdio.h>
 
-// extern FILE* yyin;
-// int yylex();
 int push_file(char* filename);
-//extern int yylineno;
+extern int yydebug;
 void yyparse();
 
 int main(int argc, char* argv[])
@@ -15,5 +13,6 @@ int main(int argc, char* argv[])
     }
 
     if(push_file(argv[1]) != 0) return 1;
+    yydebug = 0;
     yyparse();
 }

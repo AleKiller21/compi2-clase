@@ -10,7 +10,7 @@ expr_lexer.cpp: expr.l
 	flex -o $@ $^
 
 expr_parser.cpp: expr.y
-	bison -rall --defines=tokens.h -o $@ $<
+	bison -v -rall --defines=tokens.h -o $@ $<
 
 %.o: %.cpp tokens.h ast.h
 	g++ -c -o $@ $<
