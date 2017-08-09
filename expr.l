@@ -32,7 +32,6 @@ int pop_file();
 NUMBER      [0-9]+
 ID          [a-zA-z_][a-zA-z0-9_]*
 
-
 %%
 [ \t]                               { /*Nada*/ }
 ^"#"[ \t]*"include"[ \t]*[\"\<]     { include_filename_symbol = yytext+yyleng-1; BEGIN(include); }
@@ -62,7 +61,7 @@ ID          [a-zA-z_][a-zA-z0-9_]*
 "bin"                               { yylval.int_t = 2; return RW_BIN; }
 {ID}                                { yylval.id_t = new string(yytext); return TK_ID; }
 {NUMBER}                            { yylval.int_t = atoi(yytext); return TK_NUMBER; }
-\n+                                 { return TK_EOL; }
+"\n"                                { return TK_EOL; }
 <INITIAL><<EOF>>                    { if(pop_file() != 0) yyterminate();}
 .                                   { return TK_ERROR; }
 
@@ -130,6 +129,7 @@ int push_file(char* filename)
         return 1;
     }
 
+    //include_stack_t* is = malloc(sizeof(include_stack_t));
     include_stack_t* is = new(include_stack_t);
     if(is == NULL)
     {
