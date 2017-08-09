@@ -2,6 +2,8 @@
 %option yylineno
 %x comment
 %x include
+%x eol
+%x block_comment_in_eol
 
 %{
 #include <stdio.h>
@@ -34,7 +36,7 @@ ID          [a-zA-z_][a-zA-z0-9_]*
 
 %%
 [ \t]                               { /*Nada*/ }
-^"#"[ \t]*"include"[ \t]*[\"\<]     { include_filename_symbol = yytext+yyleng-1; BEGIN(include); }
+"#"[ \t]*"include"[ \t]*[\"\<]      { include_filename_symbol = yytext+yyleng-1; BEGIN(include); }
 "/*"                                { BEGIN(comment); }
 "//".*\n                            { return TK_EOL; }
 "+"                                 { return '+'; }
@@ -61,7 +63,7 @@ ID          [a-zA-z_][a-zA-z0-9_]*
 "bin"                               { yylval.int_t = 2; return RW_BIN; }
 {ID}                                { yylval.id_t = new string(yytext); return TK_ID; }
 {NUMBER}                            { yylval.int_t = atoi(yytext); return TK_NUMBER; }
-"\n"                                { return TK_EOL; }
+\n                                  { BEGIN(eol); }
 <INITIAL><<EOF>>                    { if(pop_file() != 0) yyterminate();}
 .                                   { return TK_ERROR; }
 
@@ -72,6 +74,18 @@ ID          [a-zA-z_][a-zA-z0-9_]*
 <comment>"*/"                       { BEGIN(INITIAL); }
 <comment>.|\n                       { /*Nothing*/ }
 <comment><<EOF>>                    { printf("Line %d: Block comment without end\n", yylineno); return 0; }
+
+<eol>\n                             { /* Nothing */}
+<eol>[ \t]                          { /* Nothing */}
+<eol>"//".*\n                       { /* Nothing */}
+<eol>"/*"                           { BEGIN(block_comment_in_eol); }
+<eol>"else"                         { BEGIN(INITIAL); return RW_ELSE; }
+<eol><<EOF>>                        { BEGIN(INITIAL); return TK_EOL; }
+<eol>.                              { BEGIN(INITIAL); unput(*yytext); return TK_EOL; }
+
+<block_comment_in_eol>"*/"          { BEGIN(eol); }
+<block_comment_in_eol>.|\n          { /* Nothing */}
+<block_comment_in_eol><<EOF>>       { BEGIN(eol); }
 
 %%
 
