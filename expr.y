@@ -51,6 +51,7 @@
 %token OP_NOT_EQUAL "!="
 
 %expect 1
+%glr-parser
 
 %%
 
@@ -80,7 +81,8 @@ print_statement: RW_PRINT '(' expr output_format ')' { $$ = new PrintStatement($
 assign_statement: TK_ID '=' expr { $$ = new AssignStatement($1, $3); }
 ;
 
-if_statement: RW_IF '(' expr ')' new_line block_statement else_statement { $$ = new IfStatement($3, $6, $7); }
+if_statement: RW_IF '(' expr ')' new_line block_statement else_statement %dprec 2 { $$ = new IfStatement($3, $6, $7); }
+            | RW_IF '(' expr ')' new_line block_statement %dprec 1 { $$ = new IfStatement($3, $6, NULL); }
 ;
 
 block_statement: '{' new_line stmt_list new_line '}' { $$ = $3; }
@@ -88,7 +90,6 @@ block_statement: '{' new_line stmt_list new_line '}' { $$ = $3; }
 ;
 
 else_statement: RW_ELSE new_line block_statement { $$ = $3; }
-              | %empty { $$ = NULL; }
 ;
 
 output_format: ',' RW_BIN { $$ = $2; }

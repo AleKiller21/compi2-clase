@@ -16,7 +16,7 @@ expr_parser.cpp: expr.y
 	g++ -c -o $@ $<
 
 run: $(TARGET)
-	./$(TARGET) input1.txt
+	./$(TARGET) inge_if.txt
 
 clean:
 	rm -f expr_parser.cpp expr_lexer.cpp
