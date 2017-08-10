@@ -32,8 +32,8 @@
     int int_t;
 }
 
-%type <statement_t> stmt_list stmt assign_statement print_statement if_statement block_statement else_statement
-%type <expr_t> expr
+%type <statement_t> stmt_list stmt assign_statement print_statement block_statement open_block_stmt closed_block_stmt simple_stmt open_stmt closed_stmt closed_stmt_within_braces
+%type <expr_t> expr if_clause
 %type <expr_t> term factor
 %type <expr_t> arithmetic_expressions 
 %type <expr_t> relational_expressions 
@@ -68,9 +68,8 @@ new_line: TK_EOL
         | new_line TK_EOL
 ;
 
-stmt: print_statement { $$ = $1; }
-    | assign_statement { $$ = $1; }
-    | if_statement { $$ = $1; }
+stmt: open_stmt { $$ = $1; }
+    | closed_stmt { $$ = $1; }
 ;
 
 print_statement: RW_PRINT '(' expr output_format ')' { $$ = new PrintStatement($3, $4); }
@@ -79,15 +78,35 @@ print_statement: RW_PRINT '(' expr output_format ')' { $$ = new PrintStatement($
 assign_statement: TK_ID '=' expr { $$ = new AssignStatement($1, $3); }
 ;
 
-if_statement: RW_IF '(' expr ')' new_line block_statement else_statement { $$ = new IfStatement($3, $6, $7); }
-;
-
 block_statement: '{' new_line stmt_list new_line '}' { $$ = $3; }
               | stmt { $$ = $1; }
 ;
 
-else_statement: RW_ELSE new_line block_statement { $$ = $3; }
-              | %empty { $$ = NULL; }
+simple_stmt: assign_statement { $$ = $1; }
+           | print_statement { $$ = $1; }
+;
+
+open_stmt: if_clause new_line block_statement { $$ = new IfStatement($1, $3, NULL); }
+         | if_clause new_line closed_block_stmt new_line RW_ELSE new_line open_block_stmt { $$ = new IfStatement($1, $3,  $7); }
+;
+
+if_clause: RW_IF '(' expr ')' { $$ = $3; }
+;
+
+closed_stmt: simple_stmt { $$ = $1; }
+           | if_clause new_line closed_block_stmt new_line RW_ELSE new_line closed_block_stmt { $$ = new IfStatement($1, $3, $7); }
+;
+
+open_block_stmt: '{' new_line open_stmt new_line '}' { $$ = $3; }
+               | open_stmt { $$ = $1; }
+;
+
+closed_block_stmt: '{' new_line closed_stmt_within_braces new_line '}' { $$ = $3; }
+                 | closed_stmt { $$ = $1; }
+;
+
+closed_stmt_within_braces: closed_stmt { $$ = new BlockStatement(); ((BlockStatement*)$$)->addStatement($1); }
+                         | closed_stmt_within_braces new_line closed_stmt { $$ = $1; ((BlockStatement*)$$)->addStatement($3); }
 ;
 
 output_format: ',' RW_BIN { $$ = $2; }
