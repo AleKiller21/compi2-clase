@@ -38,7 +38,7 @@ ID          [a-zA-z_][a-zA-z0-9_]*
 [ \t]                               { /*Nada*/ }
 "#"[ \t]*"include"[ \t]*[\"\<]      { include_filename_symbol = yytext+yyleng-1; BEGIN(include); }
 "/*"                                { BEGIN(comment); }
-"//".*\n                            { return TK_EOL; }
+"//".*                              { /* Nothing */ }
 "+"                                 { return '+'; }
 "-"                                 { return '-'; }
 "*"                                 { return '*'; }
@@ -77,7 +77,7 @@ ID          [a-zA-z_][a-zA-z0-9_]*
 
 <eol>\n                             { /* Nothing */}
 <eol>[ \t]                          { /* Nothing */}
-<eol>"//".*\n                       { /* Nothing */}
+<eol>"//".*                         { /* Nothing */}
 <eol>"/*"                           { BEGIN(block_comment_in_eol); }
 <eol>"else"                         { BEGIN(INITIAL); return RW_ELSE; }
 <eol><<EOF>>                        { BEGIN(INITIAL); return TK_EOL; }

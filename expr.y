@@ -58,11 +58,15 @@ source: opt_new_line stmt_list opt_new_line { $2->exec(); }
 ;
 
 stmt_list: stmt {$$ = new BlockStatement(); ((BlockStatement*)$$)->addStatement($1); }
-        | stmt_list TK_EOL stmt { $$ = $1; ((BlockStatement*)$$)->addStatement($3); }
+        | stmt_list new_line stmt { $$ = $1; ((BlockStatement*)$$)->addStatement($3); }
 ;
 
-opt_new_line: TK_EOL
+opt_new_line: new_line
             | %empty
+;
+
+new_line: TK_EOL
+        | new_line TK_EOL
 ;
 
 stmt: print_statement { $$ = $1; }
@@ -76,14 +80,14 @@ print_statement: RW_PRINT '(' expr output_format ')' { $$ = new PrintStatement($
 assign_statement: TK_ID '=' expr { $$ = new AssignStatement($1, $3); }
 ;
 
-if_statement: RW_IF '(' expr ')' TK_EOL block_statement else_statement { $$ = new IfStatement($3, $6, $7); }
+if_statement: RW_IF '(' expr ')' new_line block_statement else_statement { $$ = new IfStatement($3, $6, $7); }
 ;
 
-block_statement: '{' TK_EOL stmt_list TK_EOL '}' { $$ = $3; }
+block_statement: '{' new_line stmt_list new_line '}' { $$ = $3; }
               | stmt { $$ = $1; }
 ;
 
-else_statement: RW_ELSE TK_EOL block_statement { $$ = $3; }
+else_statement: RW_ELSE new_line block_statement { $$ = $3; }
               | %empty { $$ = NULL; }
 ;
 
