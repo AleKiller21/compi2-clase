@@ -50,7 +50,6 @@
 %token OP_EQUAL "=="
 %token OP_NOT_EQUAL "!="
 
-%expect 1
 
 %%
 

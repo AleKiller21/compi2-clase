@@ -57,7 +57,6 @@ ID          [a-zA-z_][a-zA-z0-9_]*
 ","                                 { return ',';}
 "print"                             { return RW_PRINT; }
 "if"                                { return RW_IF; }
-"else"                              { return RW_ELSE; }
 "dec"                               { yylval.int_t = 0; return RW_DEC; }
 "hex"                               { yylval.int_t = 1; return RW_HEX; }
 "bin"                               { yylval.int_t = 2; return RW_BIN; }
