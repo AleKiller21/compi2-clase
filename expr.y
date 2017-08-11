@@ -87,14 +87,14 @@ simple_stmt: assign_statement { $$ = $1; }
 ;
 
 open_stmt: if_clause new_line block_statement { $$ = new IfStatement($1, $3, NULL); }
-         | if_clause new_line closed_block_stmt new_line RW_ELSE new_line open_block_stmt { $$ = new IfStatement($1, $3,  $7); }
+         | if_clause new_line closed_block_stmt RW_ELSE new_line open_block_stmt { $$ = new IfStatement($1, $3,  $6); }
 ;
 
 if_clause: RW_IF '(' expr ')' { $$ = $3; }
 ;
 
 closed_stmt: simple_stmt { $$ = $1; }
-           | if_clause new_line closed_block_stmt new_line RW_ELSE new_line closed_block_stmt { $$ = new IfStatement($1, $3, $7); }
+           | if_clause new_line closed_block_stmt RW_ELSE new_line closed_block_stmt { $$ = new IfStatement($1, $3, $6); }
 ;
 
 open_block_stmt: '{' new_line open_stmt new_line '}' { $$ = $3; }
